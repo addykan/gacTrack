@@ -17,12 +17,24 @@ function Time() {
   }, []);
 
   return (
-    <Typography
-      style={{ color: "white", fontWeight: "normal", fontSize: "10em" }}
-      variant="h1"
-    >
-      {hours}:{minutes}
-    </Typography>
+    <>
+      <Typography
+        style={{ color: "white", fontWeight: "normal", fontSize: "10em" }}
+        variant="h1"
+      >
+        {hours}:{minutes}
+      </Typography>
+      <Typography
+        style={{ color: "white", fontWeight: "normal", fontSize: "4em" }}
+        variant="h1"
+      >
+        {hours < 12
+          ? "Good Morning Keren"
+          : hours < 4
+          ? "Good Afternoon Keren"
+          : "Good Evening Keren"}
+      </Typography>
+    </>
   );
 }
 
