@@ -48,30 +48,35 @@ class GSCourse():
             parsed_assignment_resp = BeautifulSoup(assignment_resp.text, 'html.parser')
             
             assignment_table = []
-            for assignment_row in parsed_assignment_resp.findAll('tr'):
+            for assignment_row in parsed_assignment_resp.findAll('tr')[1:]:
                 print(assignment_row)
+                # use aria-label to get name of assignment
+                # use submissionTimeChart--dueDate
+                # use submissionStatus-
+
+                td = assignment_row.find('td')
+                print(td)
+
+                submissionStatus = td['class']
+                # print(submissionStatus)
+
+                if len(submissionStatus) < 2 or submissionStatus[1] == 'submissionStatus-complete':
+                    continue
+                
+                button = assignment_row.find('button')
+                a = assignment_row.find('a')
+
+                if button and not a:
+                    assignmentName = button['data-assignment-title']
+                else:
+                    assignmentName = a.string
+                
+                print(assignmentName)
                 print()
+                self.assignments[assignmentName] = 1
 
             print("-----------------------DONE WITH ONE CLASS-----------------------")
             return
-            for assignment_row in parsed_assignment_resp.findAll('tr', class_ = 'js-assignmentTableAssignmentRow'):
-                row = []
-                for td in assignment_row.findAll('td'):
-                    row.append(td)
-                assignment_table.append(row)
-            
-            for row in assignment_table:
-                name = row[0].text
-                aid = row[0].find('a').get('href').rsplit('/',1)[1]
-                points = row[1].text
-                # TODO: (released,due) = parse(row[2])
-                submissions = row[3].text
-                percent_graded = row[4].text
-                complete = True if 'workflowCheck-complete' in row[5].get('class') else False
-                regrades_on  = False if row[6].text == 'OFF' else True
-                # TODO make these types reasonable
-                self.assignments[name] = GSAssignment(name, aid, points, percent_graded, complete, regrades_on, self)
-            self.state.add(LoadedCapabilities.ASSIGNMENTS)
 
 class GSAccount():
     '''A class designed to track the account details (instructor and student courses'''
@@ -97,14 +102,14 @@ class GSAccount():
             cid = course['href'][9:]
             name = course.find('h4').string
             shortname = course.find('h3').string
-            self.student_courses[shortname] = (GSCourse(cid, name, shortname, '2021', self.session))
+            self.student_courses[shortname] = [(GSCourse(cid, name, shortname, '2021', self.session)), 'https://www.gradescope.com/courses/' + cid]
         self.get_assignments()
         
     def get_assignments(self):
         for course in self.student_courses:
             courseObj = self.student_courses[course]
-            courseObj._lazy_load_assignments()
-            print(courseObj.assignments)
+            courseObj[0]._lazy_load_assignments()
+            print(courseObj[0].assignments)
 
 
 class GradeScopeScraper(object):
