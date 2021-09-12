@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "@material-ui/core";
+import { Typography, TextField, FormGroup } from "@material-ui/core";
 
 function Time() {
   const [hours, setHours] = useState(new Date().getHours());
   const [minutes, setMinutes] = useState(new Date().getMinutes());
-
+  const [name, setName] = useState(localStorage.getItem("name"));
+  const [nameText, setNameText] = useState("");
   useEffect(() => {
     const refreshClock = () => {
       let hours = new Date().getHours();
@@ -16,6 +17,15 @@ function Time() {
     const timerId = setInterval(refreshClock, 1000);
   }, []);
 
+  const handleNameSave = (e) => {
+    e.preventDefault();
+    setName(nameText);
+    localStorage.setItem("name", nameText);
+  };
+  const clearName = (e) => {
+    setName(null);
+    localStorage.removeItem("name");
+  };
   return (
     <>
       <Typography
@@ -27,12 +37,35 @@ function Time() {
       <Typography
         style={{ color: "white", fontWeight: "normal", fontSize: "4em" }}
         variant="h1"
+        onClick={clearName}
       >
-        {hours < 12
-          ? "Good Morning Keren"
-          : hours < 4
-          ? "Good Afternoon Keren"
-          : "Good Evening Keren"}
+        {name !== null
+          ? hours < 12
+            ? "Good Morning "
+            : hours < 4
+            ? "Good Afternoon "
+            : "Good Evening "
+          : "What's your name?"}
+        {name !== null ? (
+          name
+        ) : (
+          <form onSubmit={handleNameSave}>
+            <TextField
+              onChange={(e) => setNameText(e.target.value)}
+              value={name}
+              style={{ width: "20vw", borderColor: "white" }}
+              color="white"
+              inputProps={{
+                style: {
+                  color: "white",
+                  fontWeight: "normal",
+                  fontSize: "3em",
+                  textAlign: "center",
+                },
+              }} // font size of input text
+            />
+          </form>
+        )}
       </Typography>
     </>
   );
