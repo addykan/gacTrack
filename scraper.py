@@ -49,13 +49,13 @@ class GSCourse():
             
             assignment_table = []
             for assignment_row in parsed_assignment_resp.findAll('tr')[1:]:
-                print(assignment_row)
+                # print(assignment_row)
                 # use aria-label to get name of assignment
                 # use submissionTimeChart--dueDate
                 # use submissionStatus-
 
                 td = assignment_row.find('td')
-                print(td)
+                # print(td)
 
                 submissionStatus = td['class']
                 # print(submissionStatus)
@@ -71,11 +71,12 @@ class GSCourse():
                 else:
                     assignmentName = a.string
                 
-                print(assignmentName)
-                print()
-                self.assignments[assignmentName] = 1
+                # print(assignmentName)
+                timeRemaining = assignment_row.find('span')
+                # print()
+                self.assignments[assignmentName] = timeRemaining.string
 
-            print("-----------------------DONE WITH ONE CLASS-----------------------")
+            # print("-----------------------DONE WITH ONE CLASS-----------------------")
             return
 
 class GSAccount():
