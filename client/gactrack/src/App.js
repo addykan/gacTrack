@@ -2,6 +2,7 @@ import "./App.css";
 import { disableBodyScroll } from "body-scroll-lock";
 import Time from "./components/Time";
 import { Grid, createMuiTheme, ThemeProvider } from "@material-ui/core";
+import Assignments from "./components/Assignments";
 
 const theme = createMuiTheme({
   palette: {
@@ -31,6 +32,9 @@ function App() {
         >
           <Grid item xs={12}>
             <Time />
+          </Grid>
+          <Grid item xs={12}>
+            <Assignments />
           </Grid>
         </Grid>
       </div>
