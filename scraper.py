@@ -82,6 +82,7 @@ class GSAccount():
     def get_courses(self):
         pageContent = self.session.get('https://www.gradescope.com/')
         soup = str(BeautifulSoup(pageContent.text, 'html.parser'))
+        print(soup)
         studentCoursesIndex = soup.find('<h1 class="pageHeading">Student Courses</h1>')
         soup = soup[studentCoursesIndex:]
         start = soup.find('<h2 class="courseList--term pageSubheading"')
@@ -101,7 +102,7 @@ class GSAccount():
             courseObj = self.student_courses[course]
             courseObj[0]._lazy_load_assignments()
             print(courseObj[0].assignments)
-            self.output[course] = courseObj[0].assignments
+            self.output[course] = [courseObj[0].assignments, courseObj[1]]
 
 
 class GradeScopeScraper(object):
@@ -151,10 +152,11 @@ def main():
     # if expiration time has exceed since login, then just get new access token
 
     # dict (course code:)
-    email = "kerenh@andrew.cmu.edu"
-    password = "anudaisc00l!"
+    email = ""
+    password = ""
     GSS = GradeScopeScraper(email, password)
     output = GSS.automateLogIn()
+    print(output)
     if output:
         print(output)
 
