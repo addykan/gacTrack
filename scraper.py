@@ -49,16 +49,8 @@ class GSCourse():
             
             assignment_table = []
             for assignment_row in parsed_assignment_resp.findAll('tr')[1:]:
-                # print(assignment_row)
-                # use aria-label to get name of assignment
-                # use submissionTimeChart--dueDate
-                # use submissionStatus-
-
                 td = assignment_row.find('td')
-                # print(td)
-
                 submissionStatus = td['class']
-                # print(submissionStatus)
 
                 if len(submissionStatus) < 2 or submissionStatus[1] == 'submissionStatus-complete':
                     continue
@@ -70,13 +62,11 @@ class GSCourse():
                     assignmentName = button['data-assignment-title']
                 else:
                     assignmentName = a.string
-                
-                # print(assignmentName)
+
                 timeRemaining = assignment_row.find('span')
-                # print()
+
                 self.assignments[assignmentName] = timeRemaining.string
 
-            # print("-----------------------DONE WITH ONE CLASS-----------------------")
             return
 
 class GSAccount():
@@ -111,6 +101,7 @@ class GSAccount():
             courseObj = self.student_courses[course]
             courseObj[0]._lazy_load_assignments()
             print(courseObj[0].assignments)
+            self.output[course] = courseObj[0].assignments
 
 
 class GradeScopeScraper(object):
@@ -147,7 +138,7 @@ class GradeScopeScraper(object):
                 self.state = ConnState.LOGGED_IN
                 self.account = GSAccount(self.email, self.session)
                 self.account.get_courses()
-                return True
+                return self.account.output
         else:
             return False
 
@@ -163,7 +154,9 @@ def main():
     email = "kerenh@andrew.cmu.edu"
     password = "anudaisc00l!"
     GSS = GradeScopeScraper(email, password)
-    GSS.automateLogIn()
+    output = GSS.automateLogIn()
+    if output:
+        print(output)
 
 if __name__ == '__main__':
     main()
