@@ -55,6 +55,7 @@ function Time() {
               value={name}
               style={{ width: "20vw", borderColor: "white" }}
               color="white"
+              autoFocus
               inputProps={{
                 style: {
                   color: "white",
